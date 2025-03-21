@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'dart:io';
 
-const String appUrl = "https://www.reddit.com/";
+const int port = 8080;
+const String appUrl = "localhost:$port";
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Enable WebView debugging for Chrome DevTools
+  if (Platform.isAndroid) {
+    await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+
+  await _startServer();
   // Set preferred orientations to landscape and portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
@@ -22,6 +31,12 @@ void main() {
     systemNavigationBarDividerColor: Colors.transparent,
   ));
   runApp(const MyApp());
+}
+
+Future<void> _startServer() async {
+  final InAppLocalhostServer localhostServer =
+      InAppLocalhostServer(documentRoot: 'assets/www/');
+  await localhostServer.start();
 }
 
 class MyApp extends StatelessWidget {
@@ -67,10 +82,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
       canPop: false,
       onPopInvoked: (didPop) async {
         if (didPop) return;
-        
+
         // Check if WebView can go back in its own history
         bool canGoBack = await _webViewController.canGoBack();
-        
+
         if (canGoBack) {
           // If WebView has history, go back in WebView
           print("Navigating back in WebView history");
@@ -78,7 +93,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
         } else {
           // If no WebView history, reload home URL
           print("No WebView history - reloading home URL");
-          _webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(appUrl)));
+          _webViewController.loadUrl(
+              urlRequest: URLRequest(url: WebUri(appUrl)));
         }
       },
       child: Scaffold(
@@ -109,6 +125,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 mediaPlaybackRequiresUserGesture: false,
                 javaScriptEnabled: true,
                 javaScriptCanOpenWindowsAutomatically: true,
+                supportZoom: false,
+                useOnLoadResource: true,
+                useShouldInterceptAjaxRequest: true,
+                useShouldInterceptFetchRequest: true,
+                transparentBackground: true,
               ),
               onWebViewCreated: (controller) {
                 _webViewController = controller;
