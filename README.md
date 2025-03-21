@@ -51,7 +51,3 @@ flutter build appbundle --release
 ## License
 
 This project is open source and available under standard open source licenses.
-
-## Credits
-
-Developed by Vibe Coding
