@@ -1,16 +1,57 @@
-# wv_app
+# My Lovely Webview App
 
-A new Flutter project.
+A Flutter-based fullscreen webview application that provides an immersive browsing experience.
+
+## Features
+
+- **Fullscreen Immersive Mode**: Completely borderless experience with no system UI elements
+- **Responsive Layout**: Supports both portrait and landscape orientations
+- **Smart Navigation**: Handles back button presses intelligently by navigating webview history
+- **Optimized Performance**: Hardware accelerated rendering for smooth browsing
+
+## Technical Details
+
+- Built with Flutter (SDK ^3.5.3)
+- Uses `flutter_inappwebview` (^6.0.0) for advanced webview capabilities
+- Implements system UI mode control for true fullscreen experience
+- Handles device orientation changes seamlessly
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK (^3.5.3)
+- Android Studio / VS Code with Flutter plugins
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone this repository
+2. Run `flutter pub get` to install dependencies
+3. Connect a device or start an emulator
+4. Run `flutter run` to launch the application
+
+## Configuration
+
+The default URL is set to "https://www.reddit.com/" and can be modified in the `main.dart` file by changing the `appUrl` constant.
+
+## Building for Production
+
+To build a release APK:
+
+```bash
+flutter build apk --release
+```
+
+To build a release App Bundle:
+
+```bash
+flutter build appbundle --release
+```
+
+## License
+
+This project is open source and available under standard open source licenses.
+
+## Credits
+
+Developed by Vibe Coding
