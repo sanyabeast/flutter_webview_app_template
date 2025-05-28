@@ -14,7 +14,7 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   // Enable true fullscreen mode with no borders
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   // Set system UI overlay style to transparent
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -57,7 +57,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void initState() {
     super.initState();
     // Keep the screen on and maintain fullscreen mode
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   @override
@@ -67,10 +67,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
       canPop: false,
       onPopInvoked: (didPop) async {
         if (didPop) return;
-        
+
         // Check if WebView can go back in its own history
         bool canGoBack = await _webViewController.canGoBack();
-        
+
         if (canGoBack) {
           // If WebView has history, go back in WebView
           print("Navigating back in WebView history");
@@ -78,7 +78,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
         } else {
           // If no WebView history, reload home URL
           print("No WebView history - reloading home URL");
-          _webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(appUrl)));
+          _webViewController.loadUrl(
+              urlRequest: URLRequest(url: WebUri(appUrl)));
         }
       },
       child: Scaffold(
@@ -91,42 +92,46 @@ class _WebViewScreenState extends State<WebViewScreen> {
         // Ensure no safe area padding
         body: MediaQuery.removePadding(
           context: context,
-          removeTop: true,
+          removeTop: false,
           removeBottom: true,
           removeLeft: true,
           removeRight: true,
-          child: Container(
-            // Ensure the container takes up the full screen with no margins
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            // Make sure it fills the entire screen
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: InAppWebView(
-              initialUrlRequest: URLRequest(url: WebUri(appUrl)),
-              initialSettings: InAppWebViewSettings(
-                useShouldOverrideUrlLoading: true,
-                mediaPlaybackRequiresUserGesture: false,
-                javaScriptEnabled: true,
-                javaScriptCanOpenWindowsAutomatically: true,
-              ),
-              onWebViewCreated: (controller) {
-                _webViewController = controller;
-              },
-              onLoadStart: (controller, url) {
-                print("URL started: ${url.toString()}");
-              },
-              onProgressChanged: (controller, progress) {
-                print("Progress: $progress");
-              },
-              onLoadStop: (controller, url) {
-                print("URL loaded: ${url.toString()}");
-              },
-              onReceivedError: (controller, request, error) {
-                print("Error loading URL: ${error.description}");
-              },
-            ),
-          ),
+          child: SafeArea(
+              bottom: false,
+              left: false,
+              right: false,
+              child: Container(
+                // Ensure the container takes up the full screen with no margins
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                // Make sure it fills the entire screen
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: InAppWebView(
+                  initialUrlRequest: URLRequest(url: WebUri(appUrl)),
+                  initialSettings: InAppWebViewSettings(
+                    useShouldOverrideUrlLoading: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                    javaScriptEnabled: true,
+                    javaScriptCanOpenWindowsAutomatically: true,
+                  ),
+                  onWebViewCreated: (controller) {
+                    _webViewController = controller;
+                  },
+                  onLoadStart: (controller, url) {
+                    print("URL started: ${url.toString()}");
+                  },
+                  onProgressChanged: (controller, progress) {
+                    print("Progress: $progress");
+                  },
+                  onLoadStop: (controller, url) {
+                    print("URL loaded: ${url.toString()}");
+                  },
+                  onReceivedError: (controller, request, error) {
+                    print("Error loading URL: ${error.description}");
+                  },
+                ),
+              )),
         ),
       ),
     );
